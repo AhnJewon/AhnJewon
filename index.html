@@ -172,6 +172,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
   .tag.primary { background: var(--c-accent); color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .tag:not(.primary) { border: 1px solid #999; background: transparent; color: #333; }
   a { color: inherit; text-decoration: none; }
+  .project-video { display: none; }
   .footer { display: none; }
 }
 </style>
@@ -253,6 +254,10 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
       <div class="project-tech">ROS2 Humble · Nav2 · slam_toolbox · C++ · Python · Jetson Orin Nano · ESP32-S3 · UART · MQTT</div>
 
       <img class="hero-img" src="img/fast-vehicle.jpg" alt="F.A.S.T. 미니어처 지게차 실물">
+
+      <video class="project-video" controls muted playsinline preload="metadata">
+        <source src="img/fast-demo.mp4" type="video/mp4">
+      </video>
 
       <div class="gallery">
         <figure>
@@ -497,6 +502,10 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
       <div class="project-tech">Python · C++ · Arduino · OpenCV (허프 변환) · PID Control · MQTT · Raspberry Pi · PCA9685</div>
 
       <img class="hero-img" src="img/rccar-ui.png" alt="RC Car Control Center — 카메라 피드, AUTO/MANUAL 모드, Throttle/Steer 제어, 실시간 관제 패널">
+
+      <video class="project-video" controls muted playsinline preload="metadata">
+        <source src="img/rccar-demo.mp4" type="video/mp4">
+      </video>
 
       <div class="sub-title">내가 한 것</div>
       <ul class="fact-list">
