@@ -248,7 +248,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         <span class="project-title">F.A.S.T.</span>
         <span class="project-meta">2026.07 – 08 · 6인 팀 · SSAFY 우수상</span>
       </div>
-      <p class="project-oneliner">1/10 스케일 무인 지게차. 2×3m 환경에서 자율주행 후 파렛트에 포크를 정밀 적재하는 디지털 트윈 물류 시스템.</p>
+      <p class="project-oneliner">반도체 물류 자동화(AMHS) 환경을 축소 재현한 프로젝트. 1/10 스케일 무인 지게차가 2×3m 맵에서 자율주행 후 파렛트에 포크를 정밀 적재하고, 디지털 트윈으로 관제.</p>
       <div class="project-role">자율주행 파트 리더 — 센서 융합 · SLAM · Nav2 · 통신 설계 · 포크 기구</div>
       <div class="project-tech">ROS2 Humble · Nav2 · slam_toolbox · C++ · Python · Jetson Orin Nano · ESP32-S3 · UART · MQTT</div>
 
@@ -320,7 +320,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
       <div class="sub-title">내가 한 것</div>
       <ul class="fact-list">
         <li><strong>uart_teleop_bridge / sensor_bridge 노드 구축</strong> — ESP32에서 수신되는 바이트 스트림을 CRC-16으로 검증하고, 정상 패킷을 /imu/data, /wheel/twist 토픽으로 파싱·발행</li>
-        <li><strong>적분(I) 전용 폐루프 속도 제어기</strong> — 저속 구간에서 정지마찰을 못 넘는 P 제어 한계 확인 후, I 단독으로 전환. 듀티 축적이 마찰력을 자율 돌파하도록 설계</li>
+        <li><strong>적분(I) 전용 폐루프 속도 제어기</strong> — 저속 구간에서 P 제어가 정지마찰을 못 넘는 문제 확인. PD는 순간 출력만 높이고 축적이 안 되어서, I 단독으로 전환 — 듀티가 서서히 쌓이며 마찰력을 자율 돌파</li>
         <li><strong>EKF 센서 융합</strong> — LiDAR, ToF, IMU, 엔코더 4종의 공분산 가중치를 실험적으로 조정</li>
         <li><strong>Nav2 Behavior Tree + costmap 9단계 튜닝</strong> — 동적 장애물 잔상 문제를 voxel layer 수집 주기 조정으로 해결</li>
         <li><strong>Maximum 병합 기반 센서 레이어 분리</strong> — ToF clearing이 LiDAR 장애물을 덮어쓰는 문제를 costmap 결합 수식 분석 후 레이어 격리</li>
@@ -348,7 +348,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         <span class="project-title">Power Up — 재활 악력 컨트롤러</span>
         <span class="project-meta">2024 · 4인 팀 · CEDC 국제 경진대회 은상</span>
       </div>
-      <p class="project-oneliner">편마비 환자가 스프링 버튼을 눌러 악력을 훈련하고, 손목 기울기로 조작하는 악력기형 IoT 게임 컨트롤러. Unity 재활 미니게임과 BLE 실시간 연동.</p>
+      <p class="project-oneliner">편마비 환자의 재활 운동은 반복이 지루해서 중도 포기율이 높다는 문제에서 출발. 스프링 버튼을 눌러 악력을 훈련하고, 손목 기울기로 조작하는 악력기형 IoT 게임 컨트롤러를 만들어 Unity 재활 미니게임과 BLE로 실시간 연동.</p>
       <div class="project-role">임베디드 펌웨어 — 하드웨어 전체 + BLE</div>
       <div class="project-tech">MicroPython · Raspberry Pi Pico W · I2C · VL6180X ×4 (ToF) · MPU9250 (9축 IMU) · BLE</div>
 
@@ -394,10 +394,22 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
 
       <div class="sub-title">내가 한 것</div>
       <ul class="fact-list">
-        <li><strong>I2C 주소 충돌 우회</strong> — VL6180X 4개가 동일 주소 0x29. 물리 점퍼 공간 없어서 GPIO 순차 전원 인가 후 레지스터에서 주소를 런타임 재할당</li>
-        <li><strong>BLE MTU 확장</strong> — JSON 센서 데이터가 23바이트 기본 MTU에서 잘림. ble_simple_peripheral.py 내부에서 self._ble.config(mtu=150) 협상으로 해결</li>
+        <li><strong>I2C 주소 충돌 우회</strong> — VL6180X 4개가 동일 주소 0x29. I2C MUX를 쓰면 보드 면적과 배선이 늘어나서, GPIO 순차 전원 인가 후 레지스터에서 주소를 런타임 재할당하는 소프트웨어 방식을 선택</li>
+        <li><strong>BLE MTU 확장</strong> — JSON 센서 데이터가 23바이트 기본 MTU에서 잘림. 패킷 분할 전송은 수신 측 재조립 로직이 필요해서, ble_simple_peripheral.py에서 self._ble.config(mtu=150) 협상으로 단일 패킷 전송 유지</li>
         <li><strong>지자기 캘리브레이션</strong> — 사무실 철제 프레임의 하드/소프트 아이언 왜곡으로 방위각이 엉망. 부팅 시 100회 샘플로 자기장 구 중심 바이어스를 영점 보정</li>
       </ul>
+
+      <div class="debug-steps">
+        <div class="step-label">트러블슈팅 — I2C 버스에서 4개 센서 동시 인식 실패</div>
+        <p>VL6180X 4개를 I2C 버스에 연결했더니 전부 0x29로 응답해서 하나만 읽힘:</p>
+        <ol>
+          <li>VL6180X 데이터시트 확인 → 하드웨어 주소 핀이 없음, 레지스터(0x0212)로만 변경 가능</li>
+          <li>전원을 한꺼번에 넣으면 4개가 동시에 0x29로 올라와서 구분 불가</li>
+          <li>GPIO 4개로 각 센서 SHDN 핀 제어 → 하나씩 전원 인가 후 주소 변경 시도</li>
+          <li>1번 켜고 → 주소 42로 변경 → 2번 켜고 → 주소 43으로 변경 → 반복</li>
+          <li>결과: 4개 센서 개별 주소 할당 완료, I2C 스캔에서 4개 모두 독립 인식</li>
+        </ol>
+      </div>
     </div>
 
     <!-- ===== MFC Router ===== -->
@@ -406,7 +418,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         <span class="project-title">네트워크 프로토콜 스택 & 소프트웨어 라우터</span>
         <span class="project-meta">2023 · 개인 · 컴퓨터네트워크 A+</span>
       </div>
-      <p class="project-oneliner">컴퓨터네트워크 수업에서 C++ MFC로 Ethernet·IP·ARP 계층을 구현하고, 실제 패킷을 라우팅하는 채팅 프로그램 제작.</p>
+      <p class="project-oneliner">TCP/IP 스택의 동작 원리를 코드로 이해하기 위해 시작. 스켈레톤 코드 위에 Ethernet·IP·ARP 계층을 구현하고, Npcap으로 실제 NIC 패킷을 주고받는 채팅 + 라우팅 프로그램 제작.</p>
       <div class="project-role">1인 전체 설계 및 구현</div>
       <div class="project-tech">C++ · MFC Framework · WinPcap/Npcap API · Multithreading</div>
 
@@ -459,9 +471,20 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
       <ul class="fact-list">
         <li><strong>CBaseLayer 추상 인터페이스</strong> — 모든 계층이 상속. 한 계층을 수정해도 인접 계층이 깨지지 않는 디커플링</li>
         <li><strong>CLayerManager</strong> — 문자열 파싱으로 계층 인스턴스를 탐색·배선. 텍스트 설정만으로 스택 구조 변경 가능</li>
-        <li><strong>Npcap 비동기 수신</strong> — 소켓 수신 무한 루프가 MFC UI를 먹통으로 만드는 문제. CWinThread 분리 + PostMessage 이벤트 핸들링으로 해결</li>
+        <li><strong>Npcap 비동기 수신</strong> — 소켓 수신 무한 루프가 MFC UI를 먹통으로 만드는 문제. std::thread 대신 MFC의 CWinThread를 선택한 이유: PostMessage로 UI 스레드에 안전하게 이벤트를 전달할 수 있어서</li>
         <li><strong>ARP Cache + Routing Table</strong> — 동적 캐시 생성/만료/삭제, Proxy ARP, Gratuitous ARP 구현</li>
       </ul>
+
+      <div class="debug-steps">
+        <div class="step-label">트러블슈팅 — Npcap 수신 시 UI 프리징</div>
+        <p>패킷 수신 루프를 메인 스레드에서 돌리자 UI가 완전히 멈춤:</p>
+        <ol>
+          <li>pcap_next_ex()가 블로킹 호출 → 패킷 올 때까지 메인 스레드 점유</li>
+          <li>별도 스레드로 분리 시도 → 수신 데이터를 UI에 반영하면 크래시 (MFC는 크로스 스레드 UI 접근 불가)</li>
+          <li>CWinThread + PostMessage 패턴 적용 → 수신 스레드가 데이터를 큐에 넣고, UI 스레드가 메시지 핸들러에서 꺼내 처리</li>
+          <li>결과: UI 응답성 유지하면서 실시간 패킷 수신·표시 동작</li>
+        </ol>
+      </div>
     </div>
     <!-- ===== RC Car ===== -->
     <div class="project">
@@ -469,7 +492,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         <span class="project-title">RC카 자율주행 라인 트레이싱</span>
         <span class="project-meta">2023 · 개인 · 학부 임베디드 융합 제어</span>
       </div>
-      <p class="project-oneliner">카메라 차선 인식 + 1D LiDAR/초음파 장애물 감지 + PID 속도 제어로 라인을 따라 자율주행하는 RC카. MQTT 텔레메트리 실시간 관제.</p>
+      <p class="project-oneliner">센서-제어-통신을 한 시스템에서 통합 경험하기 위해 시작. 카메라 차선 인식 + LiDAR/초음파 장애물 감지 + PID 속도 제어로 라인을 따라 자율주행하고, MQTT로 실시간 관제.</p>
       <div class="project-role">1인 전체 설계 및 구현</div>
       <div class="project-tech">Python · C++ · Arduino · OpenCV (허프 변환) · PID Control · MQTT · Raspberry Pi · PCA9685</div>
 
@@ -479,11 +502,23 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
       <ul class="fact-list">
         <li><strong>웹 관제 UI</strong> — 카메라 실시간 피드 + AUTO/MANUAL/E-STOP 모드 전환 + Throttle·Steer 슬라이더 + 속도/가속도/장애물/이격거리 대시보드</li>
         <li><strong>OpenCV 차선 검출 파이프라인</strong> — 소벨 필터 + 허프 변환으로 차선 이탈량 도출. 30Hz 실시간 처리</li>
-        <li><strong>PID 조향·감속 제어</strong> — 급커브에서 원심력 탈선 방지. 조향각 편차의 I/D 값을 모터 속도에 피드백하여 능동 감속</li>
-        <li><strong>센서 스레드 격리</strong> — LiDAR/IMU 시리얼 폴링을 백그라운드 데몬 스레드로 분리. Lock 동기화로 비전 루프 지연 방지</li>
-        <li><strong>MQTT 텔레메트리</strong> — 속도/LiDAR 거리/배터리/에러 상태를 JSON으로 초당 15회 실시간 전송</li>
+        <li><strong>PID 조향·감속 제어</strong> — 급커브에서 원심력 탈선 방지. P만으로는 복원 속도가 느려서, I로 누적 오차를 상쇄하고 D로 급변 억제하는 풀 PID 적용. 모터 속도에 조향각 편차를 피드백하여 능동 감속</li>
+        <li><strong>센서 스레드 격리</strong> — LiDAR/IMU 시리얼 폴링을 메인에서 돌리면 비전 프레임 드랍. Lock 기반 백그라운드 데몬 스레드로 분리하여 비전 30Hz 유지</li>
+        <li><strong>MQTT 텔레메트리</strong> — HTTP는 오버헤드가 커서, 헤더 2바이트 수준의 MQTT 선택. QoS 0으로 실시간성 우선. 속도/LiDAR 거리/배터리/에러를 JSON으로 초당 15회 전송</li>
         <li><strong>장애물 우회</strong> — LiDAR 전방 30cm 이내 감지 시 차선 변경 또는 급제동 안전 로직</li>
       </ul>
+
+      <div class="debug-steps">
+        <div class="step-label">트러블슈팅 — 급커브 탈선 문제</div>
+        <p>직선에서는 잘 따라가던 RC카가 급커브에서 관성으로 라인 밖으로 이탈:</p>
+        <ol>
+          <li>P 제어만 적용 → 커브 진입 후 복원이 늦어 바깥으로 날아감</li>
+          <li>속도를 상수로 낮추면 직선에서 너무 느림 → 구간별 속도 조절 필요</li>
+          <li>조향각 편차를 모터 속도에 피드백 연동 → 편차 클수록 자동 감속되는 구조</li>
+          <li>PID 게인 튜닝 (Kp=0.5, Ki=0.01, Kd=0.3) → 급커브에서 감속 후 탈출 시 재가속</li>
+          <li>결과: 전 구간 탈선 없이 완주, 직선 최대 속도 유지</li>
+        </ol>
+      </div>
     </div>
 
   </section>
