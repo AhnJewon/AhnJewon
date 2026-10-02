@@ -120,6 +120,9 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
 .debug-steps ol { padding-left: 18px; color: var(--c-text2); margin-top: 6px; }
 .debug-steps li { margin-bottom: 4px; }
 
+/* Diagram arrows: bent paths must not be filled */
+.diagram-wrap svg path[stroke] { fill: none; }
+
 /* Video */
 .project-video { width: 100%; border-radius: 8px; border: 1px solid var(--c-border); margin: 16px 0; background: #000; }
 
@@ -166,8 +169,9 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
   .header-photo { width: 70px; height: 90px; }
   .header h1 { font-size: 22px; }
   .section { padding: 16px 0; }
-  .project { page-break-inside: avoid; }
-  .hero-img { max-height: 200px; object-fit: cover; }
+  .project-head, .project-oneliner, .project-role, .project-tech { break-after: avoid; }
+  .metrics, .diagram-wrap, figure, .hero-img, .fact-list li, .debug-steps li { break-inside: avoid; }
+  .hero-img { max-height: 220px; object-fit: contain; }
   .gallery img { max-height: 150px; object-fit: contain; }
   .tag.primary { background: var(--c-accent); color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .tag:not(.primary) { border: 1px solid #999; background: transparent; color: #333; }
@@ -249,9 +253,9 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         <span class="project-title">F.A.S.T.</span>
         <span class="project-meta">2026.07 – 08 · 6인 팀 · SSAFY 우수상</span>
       </div>
-      p class="project-oneliner">물류센터 작업자 안전 확보 및 운용 효율화를 위한 실내 무인화 프로젝트. 1/10 스케일 무인 지게차가 2×3m 맵에서 자율주행 후 파렛트에 포크를 정밀 적재하고, 디지털 트윈으로 관제.</p>
+      <p class="project-oneliner">물류센터 작업자 안전 확보 및 운용 효율화를 위한 실내 무인화 프로젝트. 1/10 스케일 무인 지게차가 2×3m 맵에서 자율주행 후 파렛트에 포크를 정밀 적재하고, 디지털 트윈으로 관제.</p>
       <div class="project-role">자율주행 파트 리더 — 센서 융합 · SLAM · Nav2 · 통신 설계 · 포크 기구</div>
-      <div class="project-tech">ROS2 Humble · Nav2 · slam_toolbox · C++ · Python · Jetson Orin Nano · ESP32-S3 · UART · MQTT</div>
+      <div class="project-tech">ROS2 Humble · Nav2 · slam_toolbox · robot_localization · Python (rclpy) · Jetson Orin Nano · ESP32-S3 · UART · USB CDC · MQTT</div>
 
       <img class="hero-img" src="img/fast-vehicle.jpg" alt="F.A.S.T. 미니어처 지게차 실물">
 
@@ -295,8 +299,11 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
           <rect x="270" y="36" width="100" height="40" rx="5" fill="var(--c-diagram-sensor)"/><text x="320" y="61" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">IMU</text>
           <rect x="390" y="36" width="100" height="40" rx="5" fill="var(--c-diagram-sensor)"/><text x="440" y="61" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Encoder</text>
           <rect x="540" y="36" width="150" height="40" rx="5" fill="var(--c-diagram-proc)"/><text x="615" y="58" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">EKF 센서 융합</text>
-          <line x1="130" y1="56" x2="540" y2="56" stroke="var(--c-diagram-arrow)" stroke-width="1" opacity="0.3"/>
+          <path d="M370 56 L385 56" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
           <path d="M490 56 L535 56" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <path d="M80 76 L80 128" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <path d="M230 76 L230 128" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <text x="236" y="98" font-size="9" fill="var(--c-text3)">costmap</text>
           <rect x="10" y="104" width="700" height="80" rx="6" fill="none" stroke="var(--c-diagram-proc)" stroke-width="1.5" stroke-dasharray="4 2" opacity="0.5"/>
           <text x="24" y="122" font-size="10" font-weight="700" fill="var(--c-diagram-proc)" opacity="0.7">NAVIGATION</text>
           <rect x="30" y="132" width="140" height="40" rx="5" fill="var(--c-diagram-proc)"/><text x="100" y="155" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">SLAM Toolbox</text>
@@ -304,13 +311,17 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
           <rect x="450" y="132" width="160" height="40" rx="5" fill="var(--c-diagram-proc)"/><text x="530" y="149" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Drive Mux</text><text x="530" y="163" text-anchor="middle" font-size="10" fill="#cce0ff">I-Controller</text>
           <path d="M170 152 L205 152" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
           <path d="M410 152 L445 152" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
-          <path d="M615 76 L615 100 L530 100 L530 128" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <path d="M615 76 L615 96 L380 96 L380 128" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
           <rect x="10" y="200" width="700" height="130" rx="6" fill="none" stroke="var(--c-diagram-hw)" stroke-width="1.5" stroke-dasharray="4 2" opacity="0.5"/>
           <text x="24" y="218" font-size="10" font-weight="700" fill="var(--c-diagram-hw)" opacity="0.7">HARDWARE</text>
           <rect x="30" y="235" width="200" height="55" rx="5" fill="var(--c-diagram-hw)"/><text x="130" y="258" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Jetson Orin Nano</text><text x="130" y="275" text-anchor="middle" font-size="10" fill="#d4bfff">ROS2 · DDS UDPv4</text>
-          <rect x="270" y="250" width="100" height="28" rx="4" fill="var(--c-diagram-comm)"/><text x="320" y="268" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">UART CRC-16</text>
-          <path d="M230 263 L265 263" stroke="var(--c-diagram-comm)" stroke-width="2" marker-end="url(#arrowO)"/>
-          <path d="M370 263 L405 263" stroke="var(--c-diagram-comm)" stroke-width="2" marker-end="url(#arrowO)"/>
+          <rect x="270" y="239" width="100" height="22" rx="4" fill="var(--c-diagram-comm)"/><text x="320" y="254" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">UART · 명령</text>
+          <path d="M230 250 L265 250" stroke="var(--c-diagram-comm)" stroke-width="2" marker-end="url(#arrowO)"/>
+          <path d="M370 250 L405 250" stroke="var(--c-diagram-comm)" stroke-width="2" marker-end="url(#arrowO)"/>
+          <rect x="270" y="266" width="100" height="22" rx="4" fill="var(--c-diagram-comm)"/><text x="320" y="281" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">USB CDC · 센서</text>
+          <path d="M410 277 L375 277" stroke="var(--c-diagram-comm)" stroke-width="2" marker-end="url(#arrowO)"/>
+          <path d="M270 277 L235 277" stroke="var(--c-diagram-comm)" stroke-width="2" marker-end="url(#arrowO)"/>
+          <text x="320" y="304" text-anchor="middle" font-size="9" fill="var(--c-text3)">두 링크 모두 CRC-16 프레임 검증</text>
           <rect x="410" y="235" width="160" height="55" rx="5" fill="var(--c-diagram-hw)"/><text x="490" y="258" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">ESP32-S3</text><text x="490" y="275" text-anchor="middle" font-size="10" fill="#d4bfff">FreeRTOS</text>
           <rect x="610" y="245" width="80" height="36" rx="5" fill="var(--c-diagram-hw)" opacity="0.7"/><text x="650" y="268" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Motors</text>
           <path d="M570 263 L605 263" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
@@ -324,12 +335,12 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
 
       <div class="sub-title">내가 한 것</div>
       <ul class="fact-list">
-        <li><strong>uart_teleop_bridge / sensor_bridge 노드 구축</strong> — ESP32에서 수신되는 바이트 스트림을 CRC-16으로 검증하고, 정상 패킷을 /imu/data, /wheel/twist 토픽으로 파싱·발행</li>
+        <li><strong>uart_teleop_bridge / sensor_bridge 노드 구축</strong> — 명령은 UART(/dev/ttyTHS1), 센서 텔레메트리는 USB CDC(/dev/ttyACM0)로 링크를 분리해 텔레메트리가 명령을 지연시키지 않게 설계. 두 링크 모두 CRC-16으로 프레임을 검증하고, 정상 프레임을 /imu/data, /wheel/twist 토픽으로 파싱·발행</li>
         <li><strong>적분(I) 전용 폐루프 속도 제어기</strong> — 저속 구간에서 P 제어가 정지마찰을 못 넘는 문제 확인. PD는 순간 출력만 높이고 축적이 안 되어서, I 단독으로 전환 — 듀티가 서서히 쌓이며 마찰력을 자율 돌파</li>
-        <li><strong>EKF 센서 융합</strong> — LiDAR, ToF, IMU, 엔코더 4종의 공분산 가중치를 실험적으로 조정</li>
-        <li><strong>Nav2 Behavior Tree + costmap 9단계 튜닝</strong> — 동적 장애물 잔상 문제를 voxel layer 수집 주기 조정으로 해결</li>
+        <li><strong>EKF 입력 축 설계</strong> — 엔코더 vx와 IMU yaw rate만 융합. 실제 주행 중에도 0에 가깝게 읽던 rf2o(LiDAR 오도메트리)는 융합에서 제외하고, 애커먼 차량은 옆으로 못 간다는 점을 이용해 vy=0을 측정값으로 넣어 횡방향 발산을 막음</li>
+        <li><strong>Nav2 장애물 대응 9겹 원인 분석</strong> — "장애물 앞에서 멈추고, 사라진 장애물이 지도에 남는" 문제를 인식·대응·기동성 9개 원인으로 분해. 가장 큰 원인인 BT 재계획 루프 부재, 글로벌 costmap의 ToF 누락, 한 번도 실행된 적 없던 시동 킥 코드 등을 수정</li>
         <li><strong>Maximum 병합 기반 센서 레이어 분리</strong> — ToF clearing이 LiDAR 장애물을 덮어쓰는 문제를 costmap 결합 수식 분석 후 레이어 격리</li>
-        <li><strong>forklift_teleop 패키지</strong> — 20개 노드/모듈 + 12개 테스트 파일 직접 작성</li>
+        <li><strong>forklift_teleop 패키지</strong> — 19개 노드/모듈 + 12개 테스트 파일 직접 작성</li>
       </ul>
 
       <div class="debug-steps">
@@ -370,7 +381,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         </div>
         <div class="metric-card">
           <div class="metric-value">100-sample</div>
-          <div class="metric-label">지자기 캘리브레이션<br>(하드/소프트 아이언 보정)</div>
+          <div class="metric-label">지자기 캘리브레이션<br>(하드 아이언 보정)</div>
         </div>
       </div>
 
@@ -401,7 +412,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
       <ul class="fact-list">
         <li><strong>I2C 주소 충돌 우회</strong> — VL6180X 4개가 동일 주소 0x29. I2C MUX를 쓰면 보드 면적과 배선이 늘어나서, GPIO 순차 전원 인가 후 레지스터에서 주소를 런타임 재할당하는 소프트웨어 방식을 선택</li>
         <li><strong>BLE MTU 확장</strong> — JSON 센서 데이터가 23바이트 기본 MTU에서 잘림. 패킷 분할 전송은 수신 측 재조립 로직이 필요해서, ble_simple_peripheral.py에서 self._ble.config(mtu=150) 협상으로 단일 패킷 전송 유지</li>
-        <li><strong>지자기 캘리브레이션</strong> — 사무실 철제 프레임의 하드/소프트 아이언 왜곡으로 방위각이 엉망. 부팅 시 100회 샘플로 자기장 구 중심 바이어스를 영점 보정</li>
+        <li><strong>지자기 캘리브레이션</strong> — 사무실 철제 프레임의 하드 아이언 왜곡으로 방위각이 엉망. 부팅 시 100회 샘플로 자기장 구 중심 바이어스를 영점 보정</li>
       </ul>
 
       <div class="debug-steps">
