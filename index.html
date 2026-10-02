@@ -506,11 +506,11 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
     <div class="project">
       <div class="project-head">
   <span class="project-title">RC카 자율주행 라인 트레이싱</span>
-  <span class="project-meta">2026.05 – 06 · 개인 · SSAFY 1학기 관통 프로젝트 (144시간)</span>
+  <span class="project-meta">2026.05 – 06 · 2인 팀 · SSAFY 1학기 관통 프로젝트 (144시간)</span>
 </div>
-      <p class="project-oneliner">센서-제어-통신을 한 시스템에서 통합 경험하기 위해 시작. 카메라 차선 인식 + LiDAR/초음파 장애물 감지 + PID 속도 제어로 라인을 따라 자율주행하고, MQTT로 실시간 관제.</p>
-      <div class="project-role">1인 전체 설계 및 구현</div>
-      <div class="project-tech">Python · C++ · Arduino · OpenCV (허프 변환) · PID Control · MQTT · Raspberry Pi · PCA9685</div>
+      <p class="project-oneliner">카메라 차선 인식 + 서보 스윕 1D LiDAR 장애물 감지 + PD·피드포워드 조향으로 2차선 트랙을 자율주행하는 RC카. 관제 서버와는 MQTT로 연동.</p>
+      <div class="project-role">차량 측 자율주행 — 차선 인식 · 조향 제어 · 장애물 회피</div>
+      <div class="project-tech">Python · OpenCV (BEV · HSV) · Raspberry Pi · picamera2 · PCA9685 (I2C) · 1D LiDAR (UART) · 초음파 · PD + Feedforward</div>
 
       <img class="hero-img" src="img/rccar-ui.png" alt="RC Car Control Center — 카메라 피드, AUTO/MANUAL 모드, Throttle/Steer 제어, 실시간 관제 패널">
 
@@ -520,23 +520,24 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
 
       <div class="sub-title">내가 한 것</div>
       <ul class="fact-list">
-        <li><strong>웹 관제 UI</strong> — 카메라 실시간 피드 + AUTO/MANUAL/E-STOP 모드 전환 + Throttle·Steer 슬라이더 + 속도/가속도/장애물/이격거리 대시보드</li>
-        <li><strong>OpenCV 차선 검출 파이프라인</strong> — 소벨 필터 + 허프 변환으로 차선 이탈량 도출. 30Hz 실시간 처리</li>
-        <li><strong>PID 조향·감속 제어</strong> — 급커브에서 원심력 탈선 방지. P만으로는 복원 속도가 느려서, I로 누적 오차를 상쇄하고 D로 급변 억제하는 풀 PID 적용. 모터 속도에 조향각 편차를 피드백하여 능동 감속</li>
-        <li><strong>센서 스레드 격리</strong> — LiDAR/IMU 시리얼 폴링을 메인에서 돌리면 비전 프레임 드랍. Lock 기반 백그라운드 데몬 스레드로 분리하여 비전 30Hz 유지</li>
-        <li><strong>MQTT 텔레메트리</strong> — HTTP는 오버헤드가 커서, 헤더 2바이트 수준의 MQTT 선택. QoS 0으로 실시간성 우선. 속도/LiDAR 거리/배터리/에러를 JSON으로 초당 15회 전송</li>
-        <li><strong>장애물 우회</strong> — LiDAR 전방 30cm 이내 감지 시 차선 변경 또는 급제동 안전 로직</li>
+        <li><strong>차선 인식 파이프라인</strong> — 광각 왜곡 보정 → 원근 변환(BEV) → HSV 마스크로 흰 차선과 주황 중앙선 분리 → 열 히스토그램 군집으로 차선 위치 추출. 세로 채움 비율로 실선/점선 판별</li>
+        <li><strong>근거리·원거리 2대역 조향</strong> — 근거리 대역(화면 하단 70~95%)의 차선 중심 오차에 PD 제어, 원거리 대역(30~55%) 중심과의 차이를 피드포워드로 더해 커브 진입 전에 미리 조향. 차선 중심과 조향값은 지수 평활</li>
+        <li><strong>좌·우측 통행 규칙 전환</strong> — 주황 중앙선 기준으로 1·2차선 중심 계산식을 바꾸고, 규칙이 바뀌면 추적 상태를 초기화해 이전 규칙의 차선 위치가 섞이지 않게 함</li>
+        <li><strong>서보 스윕 1D LiDAR</strong> — 9바이트 프레임을 체크섬·신호 세기로 검증하는 시리얼 파서 작성. 서보로 ±14° 스윕해 각도별 거리 맵을 만들고, 인접 각도·거리 차이로 군집해 장애물 단위로 분리</li>
+        <li><strong>회피 상태 머신</strong> — 전방 45cm 이내면 빈 쪽 차선으로 미리 변경(3초 쿨다운), 20cm 이내면 정지. 8프레임 연속 막히면 빈 쪽으로 조향하며 후진하고, 후방 초음파 18cm에서 정지. 차선을 12프레임 놓치면 후진해 재획득</li>
+        <li><strong>센서 스레드 분리</strong> — LiDAR 파서와 서보 스캔을 데몬 스레드로 분리하고 스캔 맵은 Lock으로 보호해 30Hz 제어 루프를 막지 않게 함</li>
+        <li><strong>PCA9685 드라이버 직접 구현</strong> — smbus2로 프리스케일·레지스터를 직접 제어(쓰기 재시도 포함). 조향 서보, LiDAR 서보, DC 모터를 한 칩으로 구동</li>
       </ul>
 
       <div class="debug-steps">
-        <div class="step-label">트러블슈팅 — 급커브 탈선 문제</div>
-        <p>직선에서는 잘 따라가던 RC카가 급커브에서 관성으로 라인 밖으로 이탈:</p>
+        <div class="step-label">설계 — 커브에 늦지 않는 조향</div>
+        <p>근거리 차선 중심 오차만 보고 조향하면 차가 이미 커브에 들어선 뒤에야 반응한다. 그래서 앞을 내다보는 항을 따로 두었다:</p>
         <ol>
-          <li>P 제어만 적용 → 커브 진입 후 복원이 늦어 바깥으로 날아감</li>
-          <li>속도를 상수로 낮추면 직선에서 너무 느림 → 구간별 속도 조절 필요</li>
-          <li>조향각 편차를 모터 속도에 피드백 연동 → 편차 클수록 자동 감속되는 구조</li>
-          <li>PID 게인 튜닝 (Kp=0.5, Ki=0.01, Kd=0.3) → 급커브에서 감속 후 탈출 시 재가속</li>
-          <li>결과: 전 구간 탈선 없이 완주, 직선 최대 속도 유지</li>
+          <li>BEV 화면을 근거리(하단 70~95%)와 원거리(30~55%) 두 대역으로 나눠 각각 차선 중심을 계산</li>
+          <li>근거리 오차는 PD(Kp=90, Kd=22)로 조향</li>
+          <li>원거리 중심과 근거리 중심의 차이를 피드포워드(Kff=50)로 더해, 커브가 화면 위쪽에 보이기 시작하면 미리 꺾음</li>
+          <li>조향 출력은 ±85로 제한하고 지수 평활로 프레임 간 튐을 억제</li>
+          <li>차선을 12프레임 연속 놓치면 정지 후 후진해 차선을 다시 잡음</li>
         </ol>
       </div>
     </div>
