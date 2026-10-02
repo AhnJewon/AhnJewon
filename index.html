@@ -285,7 +285,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         </div>
         <div class="metric-card">
           <div class="metric-value">0%</div>
-          <div class="metric-label">DDS 통신 오류율<br>(반복 재기동 검증)</div>
+          <div class="metric-label">DDS 통신 오류율<br>(UDPv4 루프백 전환 후)</div>
         </div>
       </div>
 
@@ -346,7 +346,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
 
       <div class="debug-steps">
         <div class="step-label">트러블슈팅 — DDS 통신 단절 원인 추적</div>
-        <p>데모 3일 전, 액션 응답 유실 + TF 끊김이 간헐 발생. "보드 재부팅"이라는 임시 대응을 거부하고 원인을 추적:</p>
+        <p>데모 3일 전, 액션 응답 유실 · 토픽 구독 누락 · map→odom 끊김이 간헐 발생. 서로 무관해 보이는 세 증상의 공통 원인을 추적:</p>
         <ol>
           <li>상위 노드 로그 → 토픽 구독 자체가 누락되는 것 확인</li>
           <li>/dev/shm 확인 → 비정상 종료 후 세마포어 파일 잔여 발견</li>
@@ -558,7 +558,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
     <div class="other-projects">
       <div class="other-card">
         <h4>세렌디피티 검색 엔진</h4>
-        <p>한국어 위키백과 표제어 전체를 Ko-SBERT로 임베딩하고, 관심사 벡터에서 먼 개념 1,000개를 K-Means로 군집해 낯선 테마를 찾음. 두 개념 사이 유사도가 0.5 미만인 구간에는 중간 개념을 끼워 넣어 연결 경로를 보강(Gap-Filling).</p>
+        <p>한국어 위키백과 표제어 124만 개를 Ko-SBERT로 임베딩하고, 관심사 벡터에서 먼 개념 1,000개를 K-Means로 군집해 낯선 테마를 찾음. 두 개념 사이 유사도가 0.5 미만인 구간에는 중간 개념을 끼워 넣어 연결 경로를 보강(Gap-Filling).</p>
         <div class="other-meta">2025 · 1인 개발 · 학부 4학년 2학기 · Python, Ko-SBERT, scikit-learn, Wikidata SPARQL, Streamlit</div>
       </div>
       <div class="other-card">
