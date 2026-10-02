@@ -189,7 +189,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
     <div class="header-info">
       <h1>안제원</h1>
       <div class="subtitle">임베디드 SW 엔지니어</div>
-      <p class="tagline">센서 인터페이스와 시리얼 통신을 주로 다루고 있습니다.<br>SSAFY에서 자율주행 물류 로봇을 만들었고, 학부에서는 C++로 ARP/IP 계층과 소프트웨어 라우터를 구현했습니다.</p>
+      <p class="tagline">센서 인터페이스와 시리얼 통신을 주로 다루고 있습니다.<br>SSAFY에서 자율주행 물류 로봇을 만들었고, 학부에서는 7인 팀장으로 C++ ARP 계층과 이더넷 파일 전송 프로토콜을 구현했습니다.</p>
       <div class="contacts">
         <span>inno505@naver.com</span>
         <span><a href="https://github.com/AhnJewon" target="_blank">github.com/AhnJewon</a></span>
@@ -381,7 +381,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         </div>
         <div class="metric-card">
           <div class="metric-value">100-sample</div>
-          <div class="metric-label">지자기 캘리브레이션<br>(하드 아이언 보정)</div>
+          <div class="metric-label">지자기 캘리브레이션<br>(하드/소프트 아이언 보정)</div>
         </div>
       </div>
 
@@ -412,7 +412,7 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
       <ul class="fact-list">
         <li><strong>I2C 주소 충돌 우회</strong> — VL6180X 4개가 동일 주소 0x29. I2C MUX를 쓰면 보드 면적과 배선이 늘어나서, GPIO 순차 전원 인가 후 레지스터에서 주소를 런타임 재할당하는 소프트웨어 방식을 선택</li>
         <li><strong>BLE MTU 확장</strong> — JSON 센서 데이터가 23바이트 기본 MTU에서 잘림. 패킷 분할 전송은 수신 측 재조립 로직이 필요해서, ble_simple_peripheral.py에서 self._ble.config(mtu=150) 협상으로 단일 패킷 전송 유지</li>
-        <li><strong>지자기 캘리브레이션</strong> — 사무실 철제 프레임의 하드 아이언 왜곡으로 방위각이 엉망. 부팅 시 100회 샘플로 자기장 구 중심 바이어스를 영점 보정</li>
+        <li><strong>지자기 캘리브레이션</strong> — 사무실 철제 프레임의 하드/소프트 아이언 왜곡으로 방위각이 엉망. 부팅 시 100회 샘플의 축별 최대·최소로 중심 오프셋(하드 아이언)과 축별 스케일(소프트 아이언)을 함께 보정</li>
       </ul>
 
       <div class="debug-steps">
@@ -431,17 +431,17 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
     <!-- ===== MFC Router ===== -->
     <div class="project">
       <div class="project-head">
-        <span class="project-title">네트워크 프로토콜 스택 & 소프트웨어 라우터</span>
-        <span class="project-meta">2023 · 개인 · 컴퓨터네트워크 A+</span>
+        <span class="project-title">네트워크 프로토콜 스택 — ARP · 채팅/파일 전송 · 라우팅 테이블</span>
+        <span class="project-meta">2023 · 7인 팀 · 팀장 · 컴퓨터네트워크 A+</span>
       </div>
-      <p class="project-oneliner">TCP/IP 스택의 동작 원리를 코드로 이해하기 위해 시작. 스켈레톤 코드 위에 Ethernet·IP·ARP 계층을 구현하고, Npcap으로 실제 NIC 패킷을 주고받는 채팅 + 라우팅 프로그램 제작.</p>
-      <div class="project-role">1인 전체 설계 및 구현</div>
+      <p class="project-oneliner">TCP/IP 스택의 동작 원리를 코드로 이해하기 위한 컴퓨터네트워크 과제. 수업에서 제공한 계층 뼈대(CBaseLayer · CLayerManager) 위에 Ethernet · IP · ARP · 응용 계층을 구현하고, Npcap으로 실제 NIC에서 프레임을 주고받는 프로그램 3종(채팅·파일 전송, ARP, 라우팅 테이블)을 제작.</p>
+      <div class="project-role">팀장 (7인) — 계층 구현 · 일정 조율</div>
       <div class="project-tech">C++ · MFC Framework · WinPcap/Npcap API · Multithreading</div>
 
       <div class="gallery">
         <figure>
           <img src="img/mfc-router.png" alt="라우팅 테이블">
-          <figcaption>Static Routing Table + ARP Cache (실제 NIC 바인딩)</figcaption>
+          <figcaption>라우팅 테이블 + ARP 캐시 (입·출력 NIC 2개 바인딩)</figcaption>
         </figure>
         <figure>
           <img src="img/mfc-wireshark-tx.png" alt="Wireshark 패킷 캡처">
@@ -449,56 +449,64 @@ body { font-family: var(--font); background: var(--c-bg); color: var(--c-text); 
         </figure>
         <figure>
           <img src="img/mfc-chat.png" alt="채팅 프로그램">
-          <figcaption>프로토콜 스택 위에 구축한 채팅 + 파일 전송</figcaption>
+          <figcaption>Ethernet 계층 위의 채팅 + 파일 전송</figcaption>
         </figure>
         <figure>
           <img src="img/mfc-arp.png" alt="ARP 테이블">
-          <figcaption>ARP Cache / Proxy ARP / Gratuitous ARP 구현</figcaption>
+          <figcaption>ARP 캐시 / Gratuitous ARP</figcaption>
         </figure>
       </div>
 
       <!-- MFC Diagram -->
       <div class="diagram-wrap">
-        <svg viewBox="0 0 680 190" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--font),sans-serif;">
-          <rect x="160" y="10" width="200" height="36" rx="5" fill="var(--c-diagram-proc)"/><text x="260" y="33" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Application (Chat/Dialog)</text>
-          <path d="M260 46 L260 54" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
-          <rect x="160" y="56" width="200" height="36" rx="5" fill="var(--c-diagram-proc)"/><text x="260" y="79" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">CARPLayer</text>
-          <path d="M260 92 L260 100" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
-          <rect x="160" y="102" width="200" height="36" rx="5" fill="var(--c-diagram-proc)"/><text x="260" y="125" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">CIPLayer</text>
-          <path d="M260 138 L260 146" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
-          <rect x="160" y="148" width="200" height="36" rx="5" fill="var(--c-diagram-hw)"/><text x="260" y="171" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">CEthernetLayer → CNILayer</text>
-          <rect x="30" y="56" width="110" height="82" rx="5" fill="none" stroke="var(--c-diagram-sensor)" stroke-width="1.5" stroke-dasharray="4 2"/>
-          <text x="85" y="80" text-anchor="middle" font-size="10" font-weight="600" fill="var(--c-diagram-sensor)">CBaseLayer</text>
-          <text x="85" y="95" text-anchor="middle" font-size="9" fill="var(--c-text3)">추상 인터페이스</text>
-          <text x="85" y="110" text-anchor="middle" font-size="9" fill="var(--c-text3)">다형성 상속</text>
-          <text x="85" y="125" text-anchor="middle" font-size="9" fill="var(--c-text3)">계층 디커플링</text>
-          <rect x="400" y="56" width="130" height="82" rx="5" fill="var(--c-diagram-comm)"/>
-          <text x="465" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">CLayerManager</text>
-          <text x="465" y="98" text-anchor="middle" font-size="9" fill="#fff">계층 링킹</text>
-          <text x="465" y="112" text-anchor="middle" font-size="9" fill="#fff">문자열 파싱</text>
-          <text x="465" y="126" text-anchor="middle" font-size="9" fill="#fff">동적 배선</text>
-          <path d="M400 97 L365 97" stroke="var(--c-diagram-comm)" stroke-width="1.5" marker-end="url(#arrowO)"/>
-          <rect x="550" y="148" width="120" height="36" rx="5" fill="var(--c-diagram-sensor)" opacity="0.8"/><text x="610" y="167" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">Npcap (비동기)</text><text x="610" y="179" text-anchor="middle" font-size="9" fill="#fff">CWinThread</text>
-          <path d="M360 166 L545 166" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+        <svg viewBox="0 0 680 252" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--font),sans-serif;">
+          <rect x="40" y="54" width="200" height="34" rx="5" fill="var(--c-diagram-proc)"/><text x="140" y="76" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Chat Dialog</text>
+          <rect x="40" y="98" width="200" height="34" rx="5" fill="var(--c-diagram-proc)"/><text x="140" y="120" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">ChatApp · FileApp</text>
+          <rect x="40" y="142" width="200" height="34" rx="5" fill="var(--c-diagram-hw)"/><text x="140" y="164" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Ethernet</text>
+          <rect x="40" y="186" width="200" height="34" rx="5" fill="var(--c-diagram-hw)"/><text x="140" y="208" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">NI (Npcap)</text>
+          <path d="M140 88 L140 94" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <path d="M140 132 L140 138" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <path d="M140 176 L140 182" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <text x="140" y="242" text-anchor="middle" font-size="11" font-weight="600" fill="var(--c-text3)">채팅 · 파일 전송</text>
+
+          <rect x="290" y="10" width="200" height="34" rx="5" fill="var(--c-diagram-proc)"/><text x="390" y="32" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">ARP / Route Dialog</text>
+          <rect x="290" y="54" width="200" height="34" rx="5" fill="var(--c-diagram-proc)"/><text x="390" y="76" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">IP</text>
+          <rect x="290" y="98" width="200" height="34" rx="5" fill="var(--c-diagram-proc)"/><text x="390" y="120" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">ARP (캐시 · 타이머 스레드)</text>
+          <rect x="290" y="142" width="200" height="34" rx="5" fill="var(--c-diagram-hw)"/><text x="390" y="164" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Ethernet</text>
+          <rect x="290" y="186" width="200" height="34" rx="5" fill="var(--c-diagram-hw)"/><text x="390" y="208" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">NI (Npcap)</text>
+          <path d="M390 44 L390 50" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <path d="M390 88 L390 94" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <path d="M390 132 L390 138" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <path d="M390 176 L390 182" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
+          <text x="390" y="242" text-anchor="middle" font-size="11" font-weight="600" fill="var(--c-text3)">ARP · 라우팅 테이블</text>
+
+          <rect x="530" y="54" width="130" height="78" rx="5" fill="none" stroke="var(--c-diagram-sensor)" stroke-width="1.5" stroke-dasharray="4 2"/>
+          <text x="595" y="78" text-anchor="middle" font-size="10" font-weight="600" fill="var(--c-diagram-sensor)">CBaseLayer</text>
+          <text x="595" y="93" text-anchor="middle" font-size="10" font-weight="600" fill="var(--c-diagram-sensor)">CLayerManager</text>
+          <text x="595" y="112" text-anchor="middle" font-size="9" fill="var(--c-text3)">수업 제공 뼈대</text>
+          <text x="595" y="125" text-anchor="middle" font-size="9" fill="var(--c-text3)">계층 상속 · 연결</text>
+          <rect x="530" y="186" width="130" height="34" rx="5" fill="var(--c-diagram-sensor)" opacity="0.8"/><text x="595" y="202" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">수신 스레드</text><text x="595" y="214" text-anchor="middle" font-size="9" fill="#fff">AfxBeginThread</text>
+          <path d="M490 203 L525 203" stroke="var(--c-diagram-arrow)" stroke-width="1.5" marker-end="url(#arrowG)"/>
         </svg>
       </div>
 
-      <div class="sub-title">내가 한 것</div>
+      <div class="sub-title">팀 구현 내용</div>
       <ul class="fact-list">
-        <li><strong>CBaseLayer 추상 인터페이스</strong> — 모든 계층이 상속. 한 계층을 수정해도 인접 계층이 깨지지 않는 디커플링</li>
-        <li><strong>CLayerManager</strong> — 문자열 파싱으로 계층 인스턴스를 탐색·배선. 텍스트 설정만으로 스택 구조 변경 가능</li>
-        <li><strong>Npcap 비동기 수신</strong> — 소켓 수신 무한 루프가 MFC UI를 먹통으로 만드는 문제. std::thread 대신 MFC의 CWinThread를 선택한 이유: PostMessage로 UI 스레드에 안전하게 이벤트를 전달할 수 있어서</li>
-        <li><strong>ARP Cache + Routing Table</strong> — 동적 캐시 생성/만료/삭제, Proxy ARP, Gratuitous ARP 구현</li>
+        <li><strong>ARP 계층</strong> — Request/Reply 처리. 캐시 엔트리마다 타이머 스레드를 붙여 Incomplete는 3분, Complete는 20분 뒤 자동 삭제. Gratuitous ARP를 송신하고, 수신 시 기존 엔트리의 MAC을 갱신</li>
+        <li><strong>파일 전송 계층</strong> — 파일을 1448바이트 조각으로 나누고 첫 조각에 파일명·크기를 실음. 조각마다 ACK를 기다리는 stop-and-wait, 수신 측은 시퀀스 번호로 정렬해 재조립</li>
+        <li><strong>채팅 계층</strong> — Ethernet 프레임 하나에 담기지 않는 긴 메시지를 분할 전송. 첫 프레임에 전체 길이를 싣고 수신 측에서 이어 붙여 복원</li>
+        <li><strong>Npcap 송수신 스레드</strong> — 블로킹 호출인 pcap_next_ex 수신 루프와 파일 전송을 AfxBeginThread 작업 스레드로 분리해 UI가 멈추지 않게 함</li>
+        <li><strong>라우팅 테이블</strong> — Destination · NetMask · Gateway · Flag · Interface · Metric 엔트리 추가/삭제, 입·출력 NIC 2개 선택</li>
       </ul>
 
       <div class="debug-steps">
-        <div class="step-label">트러블슈팅 — Npcap 수신 시 UI 프리징</div>
-        <p>패킷 수신 루프를 메인 스레드에서 돌리자 UI가 완전히 멈춤:</p>
+        <div class="step-label">설계 — 이더넷 위에서 파일을 빠짐없이 보내기</div>
+        <p>Ethernet 계층은 전달을 보장하지 않으므로, 파일 전송 계층이 직접 순서와 수신 확인을 맡았다:</p>
         <ol>
-          <li>pcap_next_ex()가 블로킹 호출 → 패킷 올 때까지 메인 스레드 점유</li>
-          <li>별도 스레드로 분리 시도 → 수신 데이터를 UI에 반영하면 크래시 (MFC는 크로스 스레드 UI 접근 불가)</li>
-          <li>CWinThread + PostMessage 패턴 적용 → 수신 스레드가 데이터를 큐에 넣고, UI 스레드가 메시지 핸들러에서 꺼내 처리</li>
-          <li>결과: UI 응답성 유지하면서 실시간 패킷 수신·표시 동작</li>
+          <li>보낼 파일을 미리 1448바이트 조각 리스트로 나눔. 0번 조각은 파일명·크기, 마지막 조각은 FINAL 타입으로 표시</li>
+          <li>송신 스레드는 조각을 보낸 뒤 그 시퀀스 번호의 ACK가 올 때까지 10ms 간격으로 재전송</li>
+          <li>수신 측은 조각을 받을 때마다 ACK를 돌려보내고 리스트에 쌓음</li>
+          <li>FINAL 조각을 받으면 시퀀스 번호로 정렬해 파일에 기록. 진행률은 프로그레스 바로 표시</li>
         </ol>
       </div>
     </div>
